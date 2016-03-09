@@ -3,7 +3,7 @@
   <div class="page-header">
     <div class="container-fluid">
       <div class="pull-right">
-        <button type="submit" form="form-latest" data-toggle="tooltip" title="<?php echo $button_save; ?>" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <button type="submit" form="form-blog_latest" data-toggle="tooltip" title="<?php echo $button_save; ?>" class="btn btn-primary"><i class="fa fa-save"></i></button>
         <a href="<?php echo $cancel; ?>" data-toggle="tooltip" title="<?php echo $button_cancel; ?>" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
       <h1><?php echo $heading_title; ?></h1>
       <ul class="breadcrumb">
@@ -24,7 +24,7 @@
         <h3 class="panel-title"><i class="fa fa-pencil"></i> <?php echo $text_edit; ?></h3>
       </div>
       <div class="panel-body">
-        <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-latest" class="form-horizontal">
+        <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-blog_latest" class="form-horizontal">
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-name"><?php echo $entry_name; ?></label>
             <div class="col-sm-10">
@@ -34,30 +34,90 @@
               <?php } ?>
             </div>
           </div>
+          
           <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-limit"><?php echo $entry_limit; ?></label>
+            <label class="col-sm-2 control-label" for="input-width"><?php echo $entry_limit; ?></label>
             <div class="col-sm-10">
               <input type="text" name="limit" value="<?php echo $limit; ?>" placeholder="<?php echo $entry_limit; ?>" id="input-limit" class="form-control" />
             </div>
           </div>
+          
           <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-width"><?php echo $entry_width; ?></label>
+            <label class="col-sm-2 control-label" for="input-width"><?php echo $entry_columns; ?></label>
             <div class="col-sm-10">
-              <input type="text" name="width" value="<?php echo $width; ?>" placeholder="<?php echo $entry_width; ?>" id="input-width" class="form-control" />
-              <?php if ($error_width) { ?>
-              <div class="text-danger"><?php echo $error_width; ?></div>
-              <?php } ?>
+            <select name="columns" id="input-columns" class="form-control">
+            <?php if ($columns == '4') { ?>
+            <option value="4" selected="selected"><?php echo $text_4; ?></option>
+            <?php } else { ?>
+            <option value="4"><?php echo $text_4; ?></option>
+            <?php } ?>
+            <?php if ($columns == '3') { ?>
+            <option value="3" selected="selected"><?php echo $text_3; ?></option>
+            <?php } else { ?>
+            <option value="3"><?php echo $text_3; ?></option>
+            <?php } ?>
+            <?php if ($columns == '2') { ?>
+            <option value="2" selected="selected"><?php echo $text_2; ?></option>
+            <?php } else { ?>
+            <option value="2"><?php echo $text_2; ?></option>
+            <?php } ?>
+            <?php if ($columns == '1') { ?>
+            <option value="1" selected="selected"><?php echo $text_1; ?></option>
+            <?php } else { ?>
+            <option value="1"><?php echo $text_1; ?></option>
+            <?php } ?>
+             </select>
             </div>
           </div>
+          
           <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-height"><?php echo $entry_height; ?></label>
+            <label class="col-sm-2 control-label" for="input-width"><?php echo $entry_carousel; ?></label>
             <div class="col-sm-10">
-              <input type="text" name="height" value="<?php echo $height; ?>" placeholder="<?php echo $entry_height; ?>" id="input-height" class="form-control" />
-              <?php if ($error_height) { ?>
-              <div class="text-danger"><?php echo $error_height; ?></div>
-              <?php } ?>
+             <select name="carousel" id="input-carousel" class="form-control">
+                <?php if ($carousel) { ?>
+                <option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+                <option value="0"><?php echo $text_disabled; ?></option>
+                <?php } else { ?>
+                <option value="1"><?php echo $text_enabled; ?></option>
+                <option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+                <?php } ?>
+              </select>
             </div>
           </div>
+          
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-width">
+            <span data-toggle="tooltip" title="<?php echo $entry_characters_h; ?>"><?php echo $entry_characters; ?></span></label>
+            <div class="col-sm-10">
+              <input type="text" name="characters" value="<?php echo $characters; ?>" placeholder="<?php echo $entry_characters; ?>" id="input-limit" class="form-control" />
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status"><?php echo $entry_thumb; ?></label>
+            <div class="col-sm-10">
+              <select name="thumb" id="input-status" class="form-control">
+                <?php if ($thumb) { ?>
+                <option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+                <option value="0"><?php echo $text_disabled; ?></option>
+                <?php } else { ?>
+                <option value="1"><?php echo $text_enabled; ?></option>
+                <option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-height"><?php echo $entry_thumb_size; ?></label>
+            <div class="col-sm-5">
+            <input type="text" name="width" value="<?php echo $width; ?>" id="input-width" class="form-control" />
+            </div>
+            <div class="col-sm-5">
+            <input type="text" name="height" value="<?php echo $height; ?>" id="input-height" class="form-control" />
+            </div>
+          </div>
+          
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-status"><?php echo $entry_status; ?></label>
             <div class="col-sm-10">

@@ -1,9 +1,4 @@
 <?php
-// *	@copyright	OPENCART.PRO 2011 - 2015.
-// *	@forum	http://forum.opencart.pro
-// *	@source		See SOURCE.txt for source and other copyright.
-// *	@license	GNU General Public License version 3; see LICENSE.txt
-
 class ControllerModuleBlogCategory extends Controller {
 	private $error = array();
 
@@ -23,7 +18,7 @@ class ControllerModuleBlogCategory extends Controller {
 		}
 
 		$data['heading_title'] = $this->language->get('heading_title');
-
+		
 		$data['text_edit'] = $this->language->get('text_edit');
 		$data['text_enabled'] = $this->language->get('text_enabled');
 		$data['text_disabled'] = $this->language->get('text_disabled');
@@ -65,7 +60,7 @@ class ControllerModuleBlogCategory extends Controller {
 		} else {
 			$data['blog_category_status'] = $this->config->get('blog_category_status');
 		}
-
+		
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');

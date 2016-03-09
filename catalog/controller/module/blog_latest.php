@@ -1,67 +1,77 @@
 <?php
-// *	@copyright	OPENCART.PRO 2011 - 2015.
-// *	@forum	http://forum.opencart.pro
-// *	@source		See SOURCE.txt for source and other copyright.
-// *	@license	GNU General Public License version 3; see LICENSE.txt
-
 class ControllerModuleBlogLatest extends Controller {
 	public function index($setting) {
-		$this->load->language('blog/module/latest');
-
-		$data['heading_title'] = $this->language->get('heading_title');
-
-		$data['text_views'] = $this->language->get('text_views');
-		$data['button_more'] = $this->language->get('button_more');
-
-		$this->load->model('blog/article');
-
+		
+		if (file_exists('catalog/view/theme/' . $this->config->get('config_template') . '/stylesheet/blog.css')) {
+		$this->document->addStyle('catalog/view/theme/' . $this->config->get('config_template') . '/stylesheet/blog.css');
+		} else {
+		$this->document->addStyle('catalog/view/theme/default/stylesheet/blog.css');
+		}
+		
+		static $module = 0;
+		
+		$this->load->language('blog/blog');
+		$this->load->model('blog/blog');
 		$this->load->model('tool/image');
-
-		$data['articles'] = array();
-
-		$filter_data = array(
-			'sort'  => 'p.date_added',
-			'order' => 'DESC',
+		
+		$data = array(
 			'start' => 0,
 			'limit' => $setting['limit']
 		);
+		
+		$data['characters'] = $setting['characters'];
+		$data['carousel'] = $setting['carousel'];
+		$data['columns'] = $setting['columns'];
+		$data['thumb'] = $setting['thumb'];
+		
+		if ($data['carousel']) {
+		//$this->document->addStyle('catalog/view/javascript/jquery/owl-carousel/owl.carousel.css');
+		$this->document->addScript('catalog/view/javascript/jquery/owl-carousel/owl.carousel.min.js');
+		}
+		
 
-		$results = $this->model_blog_article->getArticles($filter_data);
-
-		if ($results) {
-			foreach ($results as $result) {
-				if ($result['image']) {
-					$image = $this->model_tool_image->resize($result['image'], $setting['width'], $setting['height']);
-				} else {
-					$image = $this->model_tool_image->resize('placeholder.png', $setting['width'], $setting['height']);
-				}
+		foreach ($this->model_blog_blog->getLatestBlogs($data) as $result) {
+      		$data['posts'][] = array(
+        		'title' => $result['title'],
+				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				
-				$data['configblog_review_status'] = $this->config->get('configblog_review_status');
+				'author' => $result['author'],
+				'comment_total' => $this->model_blog_blog->getTotalCommentsByBlogId($result['blog_id']),
+				'date_added_full' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+				
+				'description' => substr(html_entity_decode($result['short_description'], ENT_QUOTES, 'UTF-8'), 0, $setting['characters']) . "...",
+				'count_read' => $result['count_read'],
+				'image'   		=> $this->model_tool_image->resize($result['image'], $setting['width'], $setting['height']),
+	    		'href'  => $this->url->link('blog/blog', 'blog_id=' . $result['blog_id'])
+      		);
+    	}
+		
+		$data['blog_show_all'] = $this->url->link('blog/home');
+		
+		$data['text_show_all'] = $this->language->get('text_show_all');
+		$data['text_posted_on'] = $this->language->get('text_posted_on');
+		$data['text_posted_by'] = $this->language->get('text_posted_by');
+		$data['text_read'] = $this->language->get('text_read');
+		$data['text_comments'] = $this->language->get('text_comments');
+		$data['text_not_found'] = $this->language->get('text_not_found');
+		$data['heading_title_latest'] = $this->language->get('heading_title_latest');
+		$data['text_read_more'] = $this->language->get('text_read_more');
+		
+			
+			
+		
+		$data['date_added_status'] = $this->config->get('blogsetting_date_added');
+		$data['comments_count_status'] = $this->config->get('blogsetting_comments_count');
+		$data['page_view_status'] = $this->config->get('blogsetting_page_view');
+		$data['author_status'] = $this->config->get('blogsetting_author');
+		
 
-				if ($this->config->get('configblog_review_status')) {
-					$rating = $result['rating'];
-				} else {
-					$rating = false;
-				}
+		$data['module'] = $module++;
 
-				$data['articles'][] = array(
-					'article_id'  => $result['article_id'],
-					'thumb'       => $image,
-					'name'        => $result['name'],
-					'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get('configblog_article_description_length')) . '..',
-					'date_added'  => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-					'viewed'      => $result['viewed'],
-					'reviews'    => sprintf($this->language->get('text_reviews'), (int)$result['reviews']),
-					'rating'      => $rating,
-					'href'        => $this->url->link('blog/article', 'article_id=' . $result['article_id']),
-				);
-			}
-
-			if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/blog/module/latest.tpl')) {
-				return $this->load->view($this->config->get('config_template') . '/template/blog/module/latest.tpl', $data);
-			} else {
-				return $this->load->view('default/template/blog/module/latest.tpl', $data);
-			}
+		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/module/blog_latest.tpl')) {
+			return $this->load->view($this->config->get('config_template') . '/template/module/blog_latest.tpl', $data);
+		} else {
+			return $this->load->view('default/template/module/blog_latest.tpl', $data);
 		}
 	}
 }
