@@ -1,8 +1,6 @@
 <?php
-// *	@copyright	OPENCART.PRO 2011 - 2015.
-// *	@forum	http://forum.opencart.pro
-// *	@source		See SOURCE.txt for source and other copyright.
-// *	@license	GNU General Public License version 3; see LICENSE.txt
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 
 // Version
 define('VERSION', '2.1.0.2');

@@ -709,6 +709,7 @@ class ControllerCatalogCategory extends Controller {
 			$href_action = $this->url->link('catalog/category/update', 'token=' . $this->session->data['token'] . '&category_id=', 'SSL');
 		}
 		$results = $this->model_catalog_category->getCategoriesByParentId($parent_id);
+
 		foreach ($results as $result) {
 			$path = $parent_path . $result['category_id'];
 			$href = ($result['children']) ? $href_category . $path : '';

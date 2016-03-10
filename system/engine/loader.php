@@ -115,4 +115,15 @@ final class Loader {
 	public function language($language) {
 		return $this->registry->get('language')->load($language);
 	}
+
+	public function library($library) {
+		$file = DIR_SYSTEM . 'library/' . $library . '.php';
+
+		if (file_exists($file)) {
+			include_once($file);
+		} else {
+			trigger_error('Error: Could not load library ' . $file . '!');
+			exit();
+		}
+	}
 }

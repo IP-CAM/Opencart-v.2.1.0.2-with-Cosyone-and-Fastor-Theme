@@ -57,17 +57,22 @@ class derevo {
         }
         $this->product_object->attributes = $product_property;
 
-        $this->product_object->product_description = $this->html->find('div.product-description', 0)->plaintext;
+        $this->product_object->product_description = trim($this->html->find('div.product-description', 0)->plaintext);
 
         $this->product_object->product_images[] = $this->html->find('div.main-image img', 0)->getAttribute('src');
 
         foreach($this->html->find('div.additional-images img') as $li_item){
             $this->product_object->product_images[] = trim($li_item->getAttribute('src'));
         }
-
-        foreach($this->html->find('ul.breadcrumb a.pathway') as $li_item){
-            $this->product_object->breadcrumbs[] = trim($li_item->childNodes(0)->plaintext);
+        $bread = false;
+        foreach($this->html->find('ul.breadcrumb a.pathway span') as $li_item){
+            if($NAME = trim($li_item->plaintext)){
+                $bread[] = $NAME;
+            }
         }
+        var_dump($bread);die;
+        $this->product_object->category_name = strtolower(trim($bread[count($bread)-2]));
+        echo $this->product_object->category_name;die;
     }
 
 
@@ -80,7 +85,7 @@ class derevo {
         $product_info['images'] = $this->product_object->product_images;
         $product_info['unit_price'] = 0;
         $product_info['attributes'] = $this->product_object->attributes;
-
+        $product_info['category_name'] = $this->product_object->category_name;
         return $product_info;
     }
 

@@ -1,25 +1,26 @@
 <?php
+header('Content-Type: text/html; charset=UTF-8');
+
+
 define('CATEGORY_MOBILE', 59);
 define('CATEGORY_SMART_WATCHES', 60);
 
 class ControllerCatalogImport extends Controller {
-	private $error = array();
-
 	public function index() {
 		$this->load->library('parser/derevo');
 
 		$this->load->model('catalog/category');
 		$this->load->model('catalog/product');
 
-		$parser = new gearbest_parser();
+		$parser = new derevo();
 
-		$parser->get_page_content('http://4derevo.ru/katalog/results,1-2.html?categorylayout=0&showcategory=0&showproducts=1&productsublayout=0');
+		$parser->get_page_content('http://4derevo.ru/katalog/results,1-2000.html?categorylayout=0&showcategory=0&showproducts=1&productsublayout=0');
 		$parser->fetch_products_from_category();
 
 		foreach($parser->get_all_products_per_category() as $product_href){
 			$parser->get_page_content('http://4derevo.ru' . $product_href);
 			$info = $parser->get_product_info();
-
+			var_dump($info);die;
 		}
 
 		#Let's scan for sub_categories per each category
@@ -71,7 +72,7 @@ class ControllerCatalogImport extends Controller {
 		}
 		#ok on this stage we have associative array of category_id => url_to_scan
 		#next step is to get products!
-		$parser = new gearbest_parser();
+		$parser = new derevo();
 
 		foreach($sub_categories_to_scan as $category_id => $category_page_url){
 			$parser->clear_category_products_list();

@@ -1,9 +1,9 @@
 <?php
 // HTTP
-define('HTTP_SERVER', 'http://localhost/pro/');
+define('HTTP_SERVER', 'http://toys.loc/');
 
 // HTTPS
-define('HTTPS_SERVER', 'http://localhost/pro/');
+define('HTTPS_SERVER', 'http://toys.loc/');
 
 // DIR
 define('DIR_APPLICATION', '/Applications/MAMP/htdocs/pro/catalog/');
