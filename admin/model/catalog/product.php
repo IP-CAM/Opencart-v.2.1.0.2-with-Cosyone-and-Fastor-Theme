@@ -447,6 +447,14 @@ class ModelCatalogProduct extends Model {
 		return $query->row;
 	}
 
+	public function getProductBySKU($sku) {
+		$query = $this->db->query("SELECT DISTINCT *, (SELECT keyword FROM " . DB_PREFIX . "url_alias WHERE
+		query = 'sku=" . $sku . "') AS keyword FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd
+		ON (p.product_id = pd.product_id) WHERE p.sku = '" . $sku . "' AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "'");
+
+		return $query->row;
+	}
+
 	public function getProductCatNames($product_id) {
 		$query = $this->db->query("SELECT cd.name FROM " . DB_PREFIX . "product_to_category p2c LEFT JOIN " . DB_PREFIX . "category_description cd ON (p2c.category_id=cd.category_id) WHERE p2c.product_id = '" . (int)$product_id . "' AND cd.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY p2c.category_id");
 		$categories = array();
@@ -558,6 +566,12 @@ class ModelCatalogProduct extends Model {
 
 	public function getProductsByCategoryId($category_id) {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_category p2c ON (p.product_id = p2c.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p2c.category_id = '" . (int)$category_id . "' ORDER BY pd.name ASC");
+
+		return $query->rows;
+	}
+
+	public function getAllSkus(){
+		$query = $this->db->query("SELECT sku FROM " . DB_PREFIX . "product p");
 
 		return $query->rows;
 	}

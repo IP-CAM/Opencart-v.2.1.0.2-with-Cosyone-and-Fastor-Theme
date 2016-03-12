@@ -23,6 +23,21 @@ class derevo {
         $this->category_products = array();
     }
 
+    function grab_file($url, $saveto){
+        $content = file_get_contents($url);
+        $fp = fopen($saveto, "w");
+        fwrite($fp, $content);
+        fclose($fp);
+
+        if(file_exists($saveto) && filesize($saveto) > 1){
+            return true;
+        }else{
+            echo "Failed to dl file! ".$url."<br>";
+            return false;
+        }
+    }
+
+
     public function get_page_content($page_url){
         $this->html = '';
         $this->product_object = '';
@@ -36,13 +51,48 @@ class derevo {
     }
 
     public function fetch_product_data(){
+        $attribute_id = array();
+        $attribute_id['Размер сборки'] = 12;
+        $attribute_id['Количество элементов'] = 13;
+        $attribute_id['Количество элементов'] = 15;
+        $attribute_id['Материал'] = 16;
+        $attribute_id['Упаковка'] = 17;
+
+
         $this->product_object = new stdClass();
 
         $this->product_object->meta_description = trim($this->html->find("meta[name='description']", 0)->content);
 
         $this->product_object->product_title = trim($this->html->find('h1', 0)->plaintext);
-        $this->product_object->sku = trim($this->html->find('div.sku', 0)->plaintext);
+        $sku_tmp = trim($this->html->find('div.sku', 0)->plaintext);
+        $sku_tmp = explode(':', $sku_tmp);
+        $this->product_object->sku = trim($sku_tmp[1]);
 
+        //Dimensions
+        // Parse property names
+        foreach($this->html->find('div.dimensions span.product-fields-title') as $product_field){
+            $attribute_names_d[] = trim($product_field->plaintext);
+        }
+        // Parse property values
+        foreach($this->html->find('div.dimensions div.product-field-display') as $product_field){
+            $attribute_value_d[] = trim($product_field->plaintext);
+        }
+        // Combine names and properties
+        foreach($attribute_names_d as $key => $attr_name){
+            $product_property_dimensions[$attr_name] = $attribute_value_d[$key];
+        }
+        $this->product_object->weight = $attribute_value_d[0];
+
+        $tmp_dimension = $attribute_value_d[1];
+        $tmp_arr = explode('x', $tmp_dimension);
+
+        $dimensions['length'] = floatval(trim($tmp_arr[0]));
+        $dimensions['width'] = floatval(trim($tmp_arr[1]));
+        $dimensions['height'] = floatval(trim($tmp_arr[2]));
+        $this->product_object->dimensions = $dimensions;
+
+        //Other properties
+        //Other properties
         // Parse property names
         foreach($this->html->find('div.product-fields div.product-field span.product-fields-title') as $product_field){
             $attribute_names[] = trim($product_field->plaintext);
@@ -55,7 +105,19 @@ class derevo {
         foreach($attribute_names as $key => $attr_name){
             $product_property[$attr_name] = $attribute_value[$key];
         }
-        $this->product_object->attributes = $product_property;
+
+
+        foreach($product_property as $attr_name => $attr_value){
+            $attr_name = str_replace(':', '', $attr_name);
+
+            $attr_id = $attribute_id[$attr_name];
+            $product_attributes[] = array(
+                'name' => $attr_name,
+                'attribute_id' => $attr_id,
+                'product_attribute_description' => array('1' => array('text'=>$attr_value)),
+            );
+        }
+        $this->product_object->attributes = $product_attributes;
 
         $this->product_object->product_description = trim($this->html->find('div.product-description', 0)->plaintext);
 
@@ -64,29 +126,12 @@ class derevo {
         foreach($this->html->find('div.additional-images img') as $li_item){
             $this->product_object->product_images[] = trim($li_item->getAttribute('src'));
         }
-        $bread = false;
-        foreach($this->html->find('ul.breadcrumb a.pathway span') as $li_item){
-            if($NAME = trim($li_item->plaintext)){
-                $bread[] = $NAME;
-            }
-        }
-        var_dump($bread);die;
-        $this->product_object->category_name = strtolower(trim($bread[count($bread)-2]));
-        echo $this->product_object->category_name;die;
     }
 
 
     public function get_product_info(){
         $this->fetch_product_data();
-
-        $product_info['title'] = $this->product_object->product_title;
-        $product_info['short_description'] = $this->product_object->meta_description;
-        $product_info['description'] = $this->product_object->product_description;
-        $product_info['images'] = $this->product_object->product_images;
-        $product_info['unit_price'] = 0;
-        $product_info['attributes'] = $this->product_object->attributes;
-        $product_info['category_name'] = $this->product_object->category_name;
-        return $product_info;
+        return $this->product_object;
     }
 
     /*** CATEGORY PARSER ***/

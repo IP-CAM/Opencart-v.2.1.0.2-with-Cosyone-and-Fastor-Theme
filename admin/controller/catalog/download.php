@@ -25,6 +25,7 @@ class ControllerCatalogDownload extends Controller {
 		$this->load->model('catalog/download');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
+			var_dump($this->request->post);die;
 			$this->model_catalog_download->addDownload($this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
