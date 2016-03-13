@@ -169,4 +169,25 @@ class ControllerCatalogImport extends Controller
 			}
 		}
 	}
+
+	function fix(){
+		$this->load->model('catalog/product');
+		$products = $this->model_catalog_product->getProducts();
+		foreach($products as $product){
+			$update = array(
+				'quantity' => 0,
+				'minimum' =>1,
+				'subtract' => 1,
+				'stock_status_id' => 8,
+				'shipping' => 0,
+				'keyword' => $this->rus2translit($product['name']),
+				'product_download' => array('2'),
+				'status' => 1,
+				'noindex' => 1
+			);
+		}
+
+	}
+
+
 }

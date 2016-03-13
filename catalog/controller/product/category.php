@@ -245,6 +245,7 @@ class ControllerProductCategory extends Controller {
 					'rating'      => $result['rating'],
 					'href'        => $this->url->link('product/product', 'path=' . $this->request->get['path'] . '&product_id=' . $result['product_id'] . $url)
 				);
+
 			}
 
 			$url = '';

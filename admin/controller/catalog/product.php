@@ -87,13 +87,17 @@ class ControllerCatalogProduct extends Controller {
 
 	public function edit() {
 		$this->language->load('catalog/product');
+		$this->load->library('parser/derevo');
+		$derevo = new derevo();
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
 		$this->load->model('catalog/product');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-			$this->model_catalog_product->editProduct($this->request->get['product_id'], $this->request->post);
+			$post = $this->request->post;
+			$post['keyword'] = $derevo->str2url($post['product_description'][1]['name']);
+			$this->model_catalog_product->editProduct($this->request->get['product_id'], $post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
