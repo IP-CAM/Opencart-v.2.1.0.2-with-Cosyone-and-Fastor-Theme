@@ -94,9 +94,11 @@ class ControllerCatalogProduct extends Controller {
 
 		$this->load->model('catalog/product');
 
-		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
+		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
 			$post = $this->request->post;
 			$post['keyword'] = $derevo->str2url($post['product_description'][1]['name']);
+		}
+		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm($post)) {
 			$this->model_catalog_product->editProduct($this->request->get['product_id'], $post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -1602,13 +1604,15 @@ class ControllerCatalogProduct extends Controller {
 		$this->response->setOutput($this->load->view('catalog/product_form.tpl', $data));
 	}
 
-	protected function validateForm() {
+	protected function validateForm($post) {
 		if (!$this->user->hasPermission('modify', 'catalog/product')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
-		
-		if(isset($this->request->post['product_tab'])) {
-			foreach($this->request->post['product_tab'] as $key => $tab){
+
+
+
+		if(isset($post['product_tab'])) {
+			foreach($post['product_tab'] as $key => $tab){
 				if($tab){
 					foreach($tab['description'] as $language_id => $value){
 						if(empty($value['heading'])){
@@ -1619,7 +1623,7 @@ class ControllerCatalogProduct extends Controller {
 			}
 		}
 
-		foreach ($this->request->post['product_description'] as $language_id => $value) {
+		foreach ($post['product_description'] as $language_id => $value) {
 			if ((utf8_strlen($value['name']) < 3) || (utf8_strlen($value['name']) > 255)) {
 				$this->error['name'][$language_id] = $this->language->get('error_name');
 			}
@@ -1633,14 +1637,14 @@ class ControllerCatalogProduct extends Controller {
 			}
 		}
 
-		if ((utf8_strlen($this->request->post['model']) < 1) || (utf8_strlen($this->request->post['model']) > 64)) {
+		if ((utf8_strlen($post['model']) < 1) || (utf8_strlen($post['model']) > 64)) {
 			$this->error['model'] = $this->language->get('error_model');
 		}
 
-		if (utf8_strlen($this->request->post['keyword']) > 0) {
+		if (utf8_strlen($post['keyword']) > 0) {
 			$this->load->model('catalog/url_alias');
 
-			$url_alias_info = $this->model_catalog_url_alias->getUrlAlias($this->request->post['keyword']);
+			$url_alias_info = $this->model_catalog_url_alias->getUrlAlias($post['keyword']);
 
 			if ($url_alias_info && isset($this->request->get['product_id']) && $url_alias_info['query'] != 'product_id=' . $this->request->get['product_id']) {
 				$this->error['keyword'] = sprintf($this->language->get('error_keyword'));

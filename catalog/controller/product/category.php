@@ -202,6 +202,10 @@ class ControllerProductCategory extends Controller {
 
 			$results = $this->model_catalog_product->getProducts($filter_data);
 
+			//TODO REMOVE NEXT LINE LATER
+			$this->load->library('parser/derevo');
+			$derevo = new derevo();
+
 			foreach ($results as $result) {
 				if ($result['image']) {
 					$image = $this->model_tool_image->resize($result['image'], $this->config->get('config_image_product_width'), $this->config->get('config_image_product_height'));
@@ -245,6 +249,15 @@ class ControllerProductCategory extends Controller {
 					'rating'      => $result['rating'],
 					'href'        => $this->url->link('product/product', 'path=' . $this->request->get['path'] . '&product_id=' . $result['product_id'] . $url)
 				);
+
+				/* HOTFIX for meta title */
+				if(!trim($result['meta_title'])){
+					$fix['tax_class_id'] = '9';
+					$fix['status'] = '0';
+					$fix['meta_title'] = $derevo->str2url($result['name']);
+
+					$this->model_catalog_product->updateMetaKEY($result['product_id'],$fix);
+				}
 
 			}
 

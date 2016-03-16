@@ -33,7 +33,7 @@ h6 {
 	font-size: 10.2px;
 }
 a {
-	color: #23a1d1;
+	color: #555555;
 }
 a:hover {
 	text-decoration: none;
@@ -190,10 +190,7 @@ div.required .control-label:before {
 }
 /* menu */
 #menu {
-	background-color: #229ac8;
-	background-image: linear-gradient(to bottom, #23a1d1, #1f90bb);
-	background-repeat: repeat-x;
-	border-color: #1f90bb #1f90bb #145e7a;
+	background-color: #783E38;
 	min-height: 40px;
 }
 #menu .nav > li > a {
@@ -259,14 +256,11 @@ div.required .control-label:before {
 	color: #FFF;
 	padding: 2px 18px;
 	float: right;
-	background-color: #229ac8;
-	background-image: linear-gradient(to bottom, #23a1d1, #1f90bb);
-	background-repeat: repeat-x;
-	border-color: #1f90bb #1f90bb #145e7a;
+	background-color: #783E38;
 }
 #menu .btn-navbar:hover, #menu .btn-navbar:focus, #menu .btn-navbar:active, #menu .btn-navbar.disabled, #menu .btn-navbar[disabled] {
 	color: #ffffff;
-	background-color: #229ac8;
+	background-color: #783E38;
 }
 @media (min-width: 768px) {
 	#menu .dropdown:hover .dropdown-menu {
