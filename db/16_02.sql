@@ -1,0 +1,1 @@
+ALTER TABLE `oc_product` ADD `my_purchase_price` DECIMAL(15,4) NOT NULL DEFAULT '0' AFTER `price`;
