@@ -170,6 +170,13 @@
                 </div>
               </div>
               <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-my_purchase_price">Закупочная цена</label>
+                <div class="col-sm-10">
+                  <input type="text" name="my_purchase_price" value="<?php echo $my_purchase_price; ?>" placeholder="<?php echo $entry_price; ?>" id="input-my_purchase_price" class="form-control" />
+                </div>
+              </div>
+
+              <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-tax-class"><?php echo $entry_tax_class; ?></label>
                 <div class="col-sm-10">
                   <select name="tax_class_id" id="input-tax-class" class="form-control">

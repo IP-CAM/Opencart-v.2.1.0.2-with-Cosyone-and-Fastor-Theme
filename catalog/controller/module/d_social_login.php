@@ -90,7 +90,7 @@ class ControllerModuleDSocialLogin extends Controller {
 
 			  	 $hybridauth = new Hybrid_Auth( $setting );
 
-			  	 $provider = $hybridauth->authenticate( $this->session->data['provider']);  
+			  	 $provider = $hybridauth->authenticate( $this->session->data['provider']);
 			 
 			  	//get the user profile 
 			  	 $profile = $provider->getUserProfile();
@@ -112,12 +112,13 @@ class ControllerModuleDSocialLogin extends Controller {
 			  	           break;
 			  	  case 6 : $json['error'] = "User profile request failed. Most likely the user is not connected "
 			  	              . "to the provider and he should authenticate again."; 
-			  	           $provider->logout(); 
+			  	           $provider->logout();
 			  	           
 			  	  case 7 : $json['error'] = "User not connected to the provider."; 
 			  	           $provider->logout();
 			  	  case 8 : $json['error'] = "Provider does not support this feature."; break;
 			  	}
+
 			  	
 			  	//echo "Ooophs, we got an error: " . $e->getMessage();
 			  	//$this->session->data['success'] = "Ooophs, we got an error: " . $e->getMessage();

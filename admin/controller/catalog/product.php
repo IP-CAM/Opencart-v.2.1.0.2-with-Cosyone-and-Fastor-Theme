@@ -1111,6 +1111,14 @@ class ControllerCatalogProduct extends Controller {
 			$data['price'] = '';
 		}
 
+		if (isset($this->request->post['my_purchase_price'])) {
+			$data['my_purchase_price'] = $this->request->post['my_purchase_price'];
+		} elseif (!empty($product_info)) {
+			$data['my_purchase_price'] = $product_info['my_purchase_price'];
+		} else {
+			$data['my_purchase_price'] = '';
+		}
+
 		$this->load->model('catalog/recurring');
 
 		$data['recurrings'] = $this->model_catalog_recurring->getRecurrings();
@@ -1638,7 +1646,7 @@ class ControllerCatalogProduct extends Controller {
 		}
 
 		if ((utf8_strlen($post['model']) < 1) || (utf8_strlen($post['model']) > 64)) {
-			$this->error['model'] = $this->language->get('error_model');
+			//$this->error['model'] = $this->language->get('error_model');
 		}
 
 		if (utf8_strlen($post['keyword']) > 0) {
